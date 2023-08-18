@@ -27,7 +27,6 @@ void MainWindow::on_pushButton_clicked()//кнопка "отправить со�
     stream << text + "\n";
 
 
-    QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);
 
 
 
@@ -46,7 +45,7 @@ void MainWindow::on_socket_add()//подключение к серверу
         socket = new QTcpSocket();
     }
     socket->connectToHost(QHostAddress::LocalHost, 2517);
-    this->ui->label->setText(QString("порт клиента: %1").arg(2517));
+    QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);
 }
 
 
