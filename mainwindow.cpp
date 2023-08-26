@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QMessageBox>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -40,17 +42,34 @@ void MainWindow::on_pushButton_clicked()//кнопка "отправить со�
 
 void MainWindow::on_socket_add()//подключение к серверу
 {
+    qDebug("test");
+
     if(!socket)
     {
         socket = new QTcpSocket();
     }
-    socket->connectToHost(QHostAddress::LocalHost, 2517);
+    socket->connectToHost("194.87.92.12", 4013);
+
+
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);
+
+    QMessageBox msgBox;
+    if(socket->waitForConnected(1000))
+    {
+        msgBox.setText("подключено");
+        msgBox.exec();
+    }
+    else {
+        msgBox.setText("не подключено");
+        msgBox.exec();
+    }
 }
 
 
 void MainWindow::new_message()
 {
+
+
     QTcpSocket *client = (QTcpSocket*)sender();
 
     QTextStream stream(client);
