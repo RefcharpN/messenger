@@ -27,6 +27,7 @@ void MainWindow::on_pushButton_clicked()//кнопка "отправить со�
     QTextStream stream(socket);
     this->ui->listWidget->addItem(QString("%1:%2:%3-%4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(text));
     stream << text + "\n";
+    stream.flush();//важно для приёма отправления
 
 
 
@@ -42,13 +43,12 @@ void MainWindow::on_pushButton_clicked()//кнопка "отправить со�
 
 void MainWindow::on_socket_add()//подключение к серверу
 {
-    qDebug("test");
 
     if(!socket)
     {
         socket = new QTcpSocket();
     }
-    socket->connectToHost("194.87.92.12", 4013);
+    socket->connectToHost("10.66.66.1", 4013);
 
 
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);

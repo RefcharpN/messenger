@@ -12,15 +12,18 @@ CONFIG += console
 SOURCES += \
     login.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    registration.cpp
 
 HEADERS += \
     login.h \
-    mainwindow.h
+    mainwindow.h \
+    registration.h
 
 FORMS += \
     login.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    registration.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
