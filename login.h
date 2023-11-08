@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include "mainwindow.h"
+#include <QTcpSocket>
+
 
 
 namespace Ui {
@@ -17,6 +19,9 @@ public:
     explicit login(QWidget *parent = nullptr);
     ~login();
 
+public slots:
+    void readSocket();
+
 private slots:
     void on_pushButton_clicked();
 
@@ -26,6 +31,9 @@ private slots:
 
 private:
     Ui::login *ui;
+
+    QPointer<QTcpSocket> socket;
+
 };
 
 #endif // LOGIN_H
