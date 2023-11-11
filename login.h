@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "mainwindow.h"
 #include <QTcpSocket>
+#include <QSerialPort>
+
 
 
 
@@ -29,10 +31,15 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void radioUpdate();
+
 private:
     Ui::login *ui;
 
     QPointer<QTcpSocket> socket;
+
+    QSerialPort *serial = NULL;
+    QString getTokenFromUSB(QString timeSt);
 
 };
 

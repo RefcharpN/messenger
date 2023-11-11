@@ -33,6 +33,7 @@ private slots:
     void on_pushButton_clicked();
     void new_message();
 
+
 private:
     Ui::MainWindow *ui;
 
