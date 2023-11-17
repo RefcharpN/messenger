@@ -42,6 +42,11 @@ void login::readSocket()
     QJsonParseError error;
 
     QJsonDocument doc = QJsonDocument::fromJson(response.toUtf8(), &error);
+    if(error.offset)
+    {
+        qWarning() << "Error: " << error.errorString() << error.offset << error.error;
+        return;
+    }
 
     if (doc.isObject())
     {
@@ -63,10 +68,13 @@ void login::on_pushButton_clicked()
     if(!socket)
     {
         socket = new QTcpSocket();
+        //socket->connectToHost("10.66.66.1", 4013);
+        socket->connectToHost("localhost", 4013);
+        QObject::connect(socket, &QTcpSocket::readyRead, this, &login::readSocket);
+
     }
-    //socket->connectToHost("10.66.66.1", 4013);
-    socket->connectToHost("localhost", 4013);
-    QObject::connect(socket, &QTcpSocket::readyRead, this, &login::readSocket);
+
+    qWarning() << "сокет открыт " << socket->isOpen();
 
     QString token;
     if(this->ui->radioButton_2->isChecked())
@@ -78,23 +86,25 @@ void login::on_pushButton_clicked()
         token = this->getTokenFromUSB(QString::number(QDateTime::currentSecsSinceEpoch()));
     }
 
+    qWarning() << "токен получен";
+
 
     if(socket->waitForConnected(1000))
     {
+        qWarning() << "ожидание завершено";
         QTextStream stream(socket);
-
-
             QJsonObject item_data;
 
             item_data.insert("OPERATION", QJsonValue("1"));
             item_data.insert("LOGIN", QJsonValue(this->ui->lineEdit->text()));
             item_data.insert("PASSWORD", QJsonValue(this->ui->lineEdit_2->text()));
             item_data.insert("TOKEN", QJsonValue(token));
-
+            qWarning() << "создан json для сервера";
         QJsonDocument doc(item_data);
         QString jsonString = doc.toJson(QJsonDocument::Compact);
 
         stream << jsonString + "\n";
+        qWarning() << "отправлено на сервер";
         stream.flush();//важно для приёма отправления
     }
 }
@@ -126,6 +136,7 @@ void login::radioUpdate()
 //работа с serial портом arduino переделать на динамический поиск
 QString login::getTokenFromUSB(QString timeSt)
 {
+    qWarning() << "запрос к usb";
     if(serial != NULL)
     {
         serial->close();
@@ -144,7 +155,7 @@ QString login::getTokenFromUSB(QString timeSt)
     serial->setRequestToSend(false);
 
     serial->open(QIODevice::ReadWrite);
-    serial->waitForReadyRead(3000);
+    serial->waitForReadyRead(1000);//требует доп. проверку
 
     QString arduinoResponseString;
     if (serial->isOpen() && serial->isWritable())

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 11.0.3, 2023-11-11T10:11:20. -->
+<!-- Written by QtCreator 11.0.3, 2023-11-17T19:07:13. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -238,7 +238,6 @@
     <value type="bool" key="PE.EnvironmentAspect.PrintOnRun">false</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/refcharpn/qt/messenger/udp_telegram.pro</value>
     <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/refcharpn/qt/messenger/udp_telegram.pro</value>
-    <value type="bool" key="RunConfiguration.RunAsRoot">true</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
