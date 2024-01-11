@@ -10,6 +10,9 @@
 #include <QDateTime>
 #include <QSerialPort>
 
+#include <QSerialPortInfo>
+
+
 
 login::login(QWidget *parent) :
     QWidget(parent),
@@ -144,7 +147,31 @@ QString login::getTokenFromUSB(QString timeSt)
     }
 
     serial = new QSerialPort();
-    serial->setPortName("/dev/ttyUSB0");  // Измените '/dev/ttyUSB0' на ваш серийный порт
+
+
+    const auto serialPortInfos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &portInfo : serialPortInfos) {
+        qWarning() << "\n"
+                   << "Port:" << portInfo.portName() << "\n"
+                   << "Location:" << portInfo.systemLocation() << "\n"
+                   << "Description:" << portInfo.description() << "\n"
+                   << "Manufacturer:" << portInfo.manufacturer() << "\n"
+                   << "Serial number:" << portInfo.serialNumber() << "\n"
+                   << "Vendor Identifier:"
+                   << (portInfo.hasVendorIdentifier()
+                           ? QByteArray::number(portInfo.vendorIdentifier(), 16)
+                           : QByteArray()) << "\n"
+                   << "Product Identifier:"
+                   << (portInfo.hasProductIdentifier()
+                           ? QByteArray::number(portInfo.productIdentifier(), 16)
+                           : QByteArray());
+
+        serial->setPortName(portInfo.portName());
+        break;
+    }
+
+
+//    serial->setPortName("/dev/ttyACM0");  // Измените '/dev/ttyUSB0' на ваш серийный порт//автоматический поиск порта
     serial->setBaudRate(QSerialPort::Baud9600);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
@@ -172,7 +199,7 @@ QString login::getTokenFromUSB(QString timeSt)
         // Ожидание и чтение ответа от Arduino
         QByteArray arduinoResponse = serial->readLine();
         arduinoResponseString = QString::fromLatin1(arduinoResponse).trimmed();
-        qWarning() << arduinoResponseString;  // Вывод полученного ответа
+        qWarning() << "токен с arduino" <<arduinoResponseString;  // Вывод полученного ответа
     }
     else
     {
