@@ -158,24 +158,25 @@ QString login::getTokenFromUSB(QString timeSt)
                    << "Manufacturer:" << portInfo.manufacturer() << "\n"
                    << "Serial number:" << portInfo.serialNumber() << "\n"
                    << "Vendor Identifier:"
-                   << (portInfo.hasVendorIdentifier()
-                           ? QByteArray::number(portInfo.vendorIdentifier(), 16)
-                           : QByteArray()) << "\n"
+                   << (portInfo.hasVendorIdentifier()? QByteArray::number(portInfo.vendorIdentifier(), 16): QByteArray()) << "\n"
                    << "Product Identifier:"
                    << (portInfo.hasProductIdentifier()
                            ? QByteArray::number(portInfo.productIdentifier(), 16)
                            : QByteArray());
+        if((portInfo.hasVendorIdentifier()? QByteArray::number(portInfo.vendorIdentifier(), 16): QByteArray()) != "")
+        {
+            serial->setPortName(portInfo.portName());
+            break;
+        }
 
-        serial->setPortName(portInfo.portName());
-        break;
     }
 
-
+    qWarning() << serial->portName();
 //    serial->setPortName("/dev/ttyACM0");  // Измените '/dev/ttyUSB0' на ваш серийный порт//автоматический поиск порта
     serial->setBaudRate(QSerialPort::Baud9600);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
-    serial->setStopBits(QSerialPort::UnknownStopBits);
+    // serial->setStopBits(QSerialPort::UnknownStopBits);
     serial->setFlowControl(QSerialPort::NoFlowControl);
 
     serial->setDataTerminalReady(false);
