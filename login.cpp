@@ -87,6 +87,10 @@ void login::on_pushButton_clicked()
     else
     {
         token = this->getTokenFromUSB(QString::number(QDateTime::currentSecsSinceEpoch()));
+        if(token.length() != 6)
+        {
+            return;
+        }
     }
 
     qWarning() << "токен получен";
@@ -160,23 +164,21 @@ QString login::getTokenFromUSB(QString timeSt)
                    << "Vendor Identifier:"
                    << (portInfo.hasVendorIdentifier()? QByteArray::number(portInfo.vendorIdentifier(), 16): QByteArray()) << "\n"
                    << "Product Identifier:"
-                   << (portInfo.hasProductIdentifier()
-                           ? QByteArray::number(portInfo.productIdentifier(), 16)
-                           : QByteArray());
-        if((portInfo.hasVendorIdentifier()? QByteArray::number(portInfo.vendorIdentifier(), 16): QByteArray()) != "")
-        {
-            serial->setPortName(portInfo.portName());
-            break;
-        }
+                   << (portInfo.hasProductIdentifier()? QByteArray::number(portInfo.productIdentifier(), 16): QByteArray());
 
+        if(((portInfo.hasVendorIdentifier()? QByteArray::number(portInfo.vendorIdentifier(), 16): QByteArray()) == "2341")
+           && ((portInfo.hasProductIdentifier()? QByteArray::number(portInfo.productIdentifier(), 16): QByteArray()) == "8036"))
+        {
+            //по двум id ищем токен на ардуино
+            serial->setPortName(portInfo.portName());
+        }
     }
 
-    qWarning() << serial->portName();
-//    serial->setPortName("/dev/ttyACM0");  // Измените '/dev/ttyUSB0' на ваш серийный порт//автоматический поиск порта
+    qWarning() << "установлен порт" << serial->portName();
     serial->setBaudRate(QSerialPort::Baud9600);
     serial->setDataBits(QSerialPort::Data8);
     serial->setParity(QSerialPort::NoParity);
-    // serial->setStopBits(QSerialPort::UnknownStopBits);
+    //serial->setStopBits(QSerialPort::UnknownStopBits);
     serial->setFlowControl(QSerialPort::NoFlowControl);
 
     serial->setDataTerminalReady(false);
