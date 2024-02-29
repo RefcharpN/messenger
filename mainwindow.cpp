@@ -48,7 +48,7 @@ void MainWindow::on_socket_add()//подключение к серверу
     {
         socket = new QTcpSocket();
     }
-    socket->connectToHost("10.66.66.1", 4013);
+    socket->connectToHost("25.8.8.1", 4013);
 
 
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);

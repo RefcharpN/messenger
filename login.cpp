@@ -71,8 +71,8 @@ void login::on_pushButton_clicked()
     if(!socket)
     {
         socket = new QTcpSocket();
-        //socket->connectToHost("10.66.66.1", 4013);
-        socket->connectToHost("localhost", 4013);
+        socket->connectToHost("25.8.8.1", 4013);
+        //socket->connectToHost("localhost", 4013);
         QObject::connect(socket, &QTcpSocket::readyRead, this, &login::readSocket);
 
     }
