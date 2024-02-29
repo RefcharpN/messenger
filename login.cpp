@@ -57,6 +57,8 @@ void login::readSocket()
         QString exist = obj["EXIST"].toString();
         if(exist == "1")
         {
+            int socketDescriptor = this->socket->socketDescriptor();
+            QObject::disconnect(socket, &QTcpSocket::readyRead, this, &login::readSocket);
             MainWindow *w = new MainWindow(socket);
             w->show();
             this->close();
@@ -70,8 +72,8 @@ void login::on_pushButton_clicked()
     if(!socket)
     {
         socket = new QTcpSocket();
-        socket->connectToHost("25.8.8.1", 4013);
-        //socket->connectToHost("localhost", 4013);
+        //socket->connectToHost("25.8.8.1", 4013);
+        socket->connectToHost("localhost", 4013);
         QObject::connect(socket, &QTcpSocket::readyRead, this, &login::readSocket);
 
     }

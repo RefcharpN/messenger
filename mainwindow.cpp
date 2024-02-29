@@ -8,13 +8,9 @@ MainWindow::MainWindow(QPointer<QTcpSocket> socket, QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     this->socket = socket;
 
-
     on_socket_add();
-
-    //init_db();
 }
 
 MainWindow::~MainWindow()
@@ -32,91 +28,34 @@ void MainWindow::on_pushButton_clicked()//кнопка "отправить со�
     stream << text + "\n";
     stream.flush();//важно для приёма отправления
 
-
-
-
-
-//    QSqlQuery query(db);
-//    query.exec("INSERT INTO message_log (info) "
-//                   "VALUES ('"+QString("%1:%2:%3-%4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(text)+"')");
-
-//    this->ui->lineEdit->clear();
-
 }
 
 void MainWindow::on_socket_add()//подключение к серверу
 {
-
-    if(!socket)
-    {
-        //socket = new QTcpSocket();
-    }
-    //socket->connectToHost("25.8.8.1", 4013);
-    //socket->connectToHost("localhost", 4013);
-
-
-
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);
 
-    QMessageBox msgBox;
-    if(socket->waitForConnected(1000))
-    {
-        msgBox.setText("подключено");
-        msgBox.exec();
-    }
-    else {
-        msgBox.setText("не подключено");
-        msgBox.exec();
+    // Проверка, если уже есть данные для чтения
+    if (socket->bytesAvailable() > 0) {
+        new_message(); // Вызываем new_message вручную
     }
 }
 
 
 void MainWindow::new_message()
 {
-
+    qWarning() << "новое сообщение";
 
     QTcpSocket *client = (QTcpSocket*)sender();
 
     QTextStream stream(client);
 
-    QString text = stream.readLine();
+    QString response = stream.readLine();
 
-    this->ui->listWidget->addItem(QString("%1:%2:%3-%4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(text));
+    qWarning() << "сообщение" << response;
 
-//    QSqlQuery query(db);
-//    query.exec("insert into message_log(info) values ('"+QString("%1:%2:%3-%4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(text)+"')");
+    this->ui->listWidget->addItem(QString("%1:%2:%3 - %4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(response));
 
 }
 
-void MainWindow::init_db()
-{
 
-    db = QSqlDatabase::addDatabase( "QSQLITE" );
-    db.setDatabaseName( "hw3" );
-
-
-    if(!db.open())
-    {
-        qWarning() << db.lastError().text();
-    }
-    else
-    {
-        QSqlQuery query(db);
-        if( !query.exec("CREATE TABLE message_log(info nvarchar(255) not null)") )
-        {
-            query.exec("SELECT info FROM message_log");
-            while (query.next())
-            {
-              this->ui->listWidget->addItem(query.value(0).toString());
-            }
-        }
-        else
-        {
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("создана бд");
-            msgBox.setText("была создана база для хранения сообщений");
-            msgBox.exec();
-        }
-    }
-}
 
