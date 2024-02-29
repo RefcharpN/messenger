@@ -26,7 +26,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QPointer<QTcpSocket> socket, QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:

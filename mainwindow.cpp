@@ -3,11 +3,14 @@
 #include <QMessageBox>
 
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QPointer<QTcpSocket> socket, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    this->socket = socket;
+
 
     on_socket_add();
 
@@ -46,9 +49,11 @@ void MainWindow::on_socket_add()//подключение к серверу
 
     if(!socket)
     {
-        socket = new QTcpSocket();
+        //socket = new QTcpSocket();
     }
-    socket->connectToHost("25.8.8.1", 4013);
+    //socket->connectToHost("25.8.8.1", 4013);
+    //socket->connectToHost("localhost", 4013);
+
 
 
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::new_message);

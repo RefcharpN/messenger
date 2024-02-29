@@ -57,10 +57,9 @@ void login::readSocket()
         QString exist = obj["EXIST"].toString();
         if(exist == "1")
         {
-            MainWindow *w = new MainWindow();
+            MainWindow *w = new MainWindow(socket);
             w->show();
-
-            //    this->close();
+            this->close();
         }
     }
 }
