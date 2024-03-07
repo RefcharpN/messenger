@@ -8,26 +8,16 @@ MainWindow::MainWindow(QPointer<QTcpSocket> socket, QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->socket = socket;
 
+    this->redCapella = new RedCapella();
+
+    this->socket = socket;
     on_socket_add();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-
-void MainWindow::on_pushButton_clicked()//кнопка "отправить сообщение"
-{
-    QString text = this->ui->lineEdit->text();
-
-    QTextStream stream(socket);
-    this->ui->listWidget->addItem(QString("%1:%2:%3-%4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(text));
-    stream << text + "\n";
-    stream.flush();//важно для приёма отправления
-
 }
 
 void MainWindow::on_socket_add()//подключение к серверу
@@ -54,6 +44,18 @@ void MainWindow::new_message()
     qWarning() << "сообщение" << response;
 
     this->ui->listWidget->addItem(QString("%1:%2:%3 - %4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(response));
+
+}
+
+void MainWindow::on_pushButton_clicked()//кнопка "отправить сообщение"
+{
+    QString line = this->ui->lineEdit->text();
+    QString text = this->redCapella->capellaEncode(line);
+
+    QTextStream stream(socket);
+    this->ui->listWidget->addItem(QString("%1:%2:%3-%4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(line));
+    stream << text + "\n";
+    stream.flush();//важно для приёма отправления
 
 }
 

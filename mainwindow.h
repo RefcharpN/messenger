@@ -15,6 +15,7 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QHostAddress>
+#include "redcapella.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -33,17 +34,13 @@ private slots:
     void on_pushButton_clicked();
     void new_message();
 
-
 private:
     Ui::MainWindow *ui;
 
-    void init_db();
-    QSqlDatabase db;
-
     QPointer<QTcpSocket> socket;
+    RedCapella *redCapella;
 
     void on_socket_add();
-
 
 };
 #endif // MAINWINDOW_H
