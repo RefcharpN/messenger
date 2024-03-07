@@ -2,8 +2,6 @@
 
 #include <QDebug>
 #include <chartable.h>
-#include <QTextCodec>
-#include <QString>
 
 RedCapella::RedCapella()
 {
