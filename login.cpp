@@ -71,8 +71,8 @@ void login::on_pushButton_clicked()
     if(!socket)
     {
         socket = new QTcpSocket();
-        //socket->connectToHost("25.8.8.1", 4013);
-        socket->connectToHost("localhost", 4013);
+        socket->connectToHost("25.8.8.1", 4013);
+        //socket->connectToHost("localhost", 4013);
         QObject::connect(socket, &QTcpSocket::readyRead, this, &login::readSocket);
 
     }
@@ -203,6 +203,7 @@ QString login::getTokenFromUSB(QString timeSt)
         QByteArray arduinoResponse = serial->readLine();
         arduinoResponseString = QString::fromLatin1(arduinoResponse).trimmed();
         qWarning() << "токен с arduino" <<arduinoResponseString;  // Вывод полученного ответа
+        serial->close();
     }
     else
     {

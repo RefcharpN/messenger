@@ -13,6 +13,8 @@ class RedCapella
 public:
     RedCapella();
     QString capellaEncode(QString toCode);
+    QString decode(QString coded_str);
+
 
 private:
     QList<CharTable> generateAlp(QString key);

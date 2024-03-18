@@ -44,6 +44,68 @@ QString RedCapella::capellaEncode(QString toCode)
     return s;
 }
 
+QString RedCapella::decode(QString coded_str)
+{
+    //преобразование qstring в qlist<int>
+
+    QList<int> coded_int;
+    QByteArray byteArray = coded_str.toLatin1();
+
+    for(char c : byteArray)
+    {
+        int digit = c - '0';
+        coded_int.append(digit);
+    }
+
+    qWarning() << "преобразование строки в список - " << coded_int << "\n\nпервый проход дешифровки\n\n";
+
+    QList<int> firstCode;
+    int count = 0;
+
+    for(auto item: coded_int)
+    {
+        if(count == phraseEncoded.length())
+        {
+            count = 0;
+        }
+
+        if(item >= phraseEncoded.at(count))
+        {
+            firstCode.append(item - phraseEncoded.at(count));
+        }
+        else
+        {
+            firstCode.append(item + 10 - phraseEncoded.at(count));
+        }
+
+        count++;
+
+    }
+    qWarning() << "снятие второго уровня шифрования - " << firstCode << "\n\nвторой проход дешифровки\n\n";
+
+    QString source_text;
+    for(int i =0; i <= firstCode.length() - 4; i = i+4)
+    {
+        int pos_up = firstCode[i]*10 + firstCode[i+1];
+        int pos_down = firstCode[i+2]*10 + firstCode[i+3];
+        qWarning() << "pos_up" << pos_up;
+        qWarning() << "pos_down" << pos_down;
+
+        auto itObj = std::find_if(indexTable.begin(), indexTable.end(), [pos_up, pos_down](const CharTable& o) {
+            return o.pos_up == pos_up && o.pos_down == pos_down;
+        });
+
+        if (itObj != indexTable.end()) {
+            auto matched_chr = itObj->chr;
+            source_text.append(matched_chr);            // получаем o.chr из объекта CharTable
+        } else {
+            // Обработка случая, когда не найдено соответствие
+        }
+    }
+    qWarning() << source_text;
+    return source_text;
+}
+
 QList<CharTable> RedCapella::generateAlp(QString key)
 {
     QList<CharTable> table;

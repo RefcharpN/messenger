@@ -43,7 +43,9 @@ void MainWindow::new_message()
 
     qWarning() << "сообщение" << response;
 
-    this->ui->listWidget->addItem(QString("%1:%2:%3 - %4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(response));
+    QString decoded_txt = this->redCapella->decode(response);
+
+    this->ui->listWidget->addItem(QString("%1:%2:%3 - %4").arg(QTime::currentTime().hour()).arg(QTime::currentTime().minute()).arg(QTime::currentTime().second()).arg(decoded_txt));
 
 }
 
