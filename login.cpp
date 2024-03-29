@@ -19,6 +19,7 @@ login::login(QWidget *parent) :
     ui(new Ui::login)
 {
     ui->setupUi(this);
+    this->ui->lineEdit_2->setEchoMode(QLineEdit::Password);
 
     QObject::connect(this->ui->radioButton, SIGNAL(toggled(bool)), this, SLOT(radioUpdate()));
 
